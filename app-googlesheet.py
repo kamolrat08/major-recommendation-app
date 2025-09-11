@@ -112,6 +112,58 @@ elif menu_choice == "แบบทดสอบเลือกการตัด�
             st.sidebar.error(f"เกิดข้อผิดพลาดในการบันทึกข้อมูล: {e}")
 
         st.header("เส้นทางการตัดสินใจของคุณ:")
+# --- ส่วนแสดงผล Graphviz ---
+        dot = graphviz.Digraph(comment='Decision Tree')
+        dot.attr('node', shape='box', style='rounded,filled')
+
+        # กำหนดสี
+        active_color = "#4CAF50"  # สีเขียวสำหรับเส้นทางที่เลือก
+        default_color = "grey"
+
+        # สร้าง Node ทั้งหมด
+        dot.node('A', 'ผลการเรียนรวม')
+        dot.node('B', 'ผลการเรียนวิชาเอก')
+        dot.node('C', 'ผลการเรียนวิชาธุรกิจ')
+        dot.node('D', 'คอมพิวเตอร์')
+        dot.node('E', 'การโรงแรม')
+        dot.node('F', 'การตลาด')
+        dot.node('G', 'การจัดการ')
+
+        # สร้างเส้นเชื่อมทั้งหมด (เป็นสีเทาเริ่มต้น)
+        dot.edge('A', 'B', label='ดี', color=default_color)
+        dot.edge('A', 'B', label='ไม่ดี', color=default_color)
+        dot.edge('B', 'C', label='ดี', color=default_color)
+        dot.edge('B', 'E', label='ไม่ดี', color=default_color)
+        dot.edge('B', 'D', label='ดี', color=default_color)
+        dot.edge('B', 'C', label='ไม่ดี', color=default_color)
+        dot.edge('C', 'F', label='ดี', color=default_color)
+        dot.edge('C', 'E', label='ไม่ดี', color=default_color)
+        dot.edge('C', 'D', label='ดี', color=default_color)
+        dot.edge('C', 'G', label='ไม่ดี', color=default_color)
+
+        # ไฮไลท์เส้นทางที่ผู้ใช้เลือก
+        if total_grade == "ไม่ดี":
+            dot.edge('A', 'B', label='ไม่ดี', color=active_color)
+            if major_grade == "ไม่ดี":
+                dot.edge('B', 'C', label='ไม่ดี', color=active_color)
+                if business_grade == "ไม่ดี":
+                    dot.edge('C', 'G', label='ไม่ดี', color=active_color)
+                else: # business_grade == "ดี"
+                    dot.edge('C', 'D', label='ดี', color=active_color)
+            else: # major_grade == "ดี"
+                dot.edge('B', 'D', label='ดี', color=active_color)
+        else: # total_grade == "ดี"
+            dot.edge('A', 'B', label='ดี', color=active_color)
+            if major_grade == "ไม่ดี":
+                dot.edge('B', 'E', label='ไม่ดี', color=active_color)
+            else: # major_grade == "ดี"
+                dot.edge('B', 'C', label='ดี', color=active_color)
+                if business_grade == "ไม่ดี":
+                    dot.edge('C', 'E', label='ไม่ดี', color=active_color)
+                else: # business_grade == "ดี"
+                    dot.edge('C', 'F', label='ดี', color=active_color)
+        
+        st.graphviz_chart(dot)
         st.success(f"สาขาที่แนะนำสำหรับคุณคือ: **{result_text}**")
 
     else:
