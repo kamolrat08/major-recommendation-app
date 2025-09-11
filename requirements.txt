@@ -1,5 +1,5 @@
-streamlit
-graphviz
-pandas
-plotly
-streamlit-gsheets-connection
+streamlit==1.33.0
+graphviz==0.20.1
+pandas==2.0.3
+plotly==5.18.0
+streamlit-gsheets-connection==3.4.1
