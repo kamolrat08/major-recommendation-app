@@ -1,0 +1,5 @@
+streamlit
+graphviz
+pandas
+plotly
+streamlit-gsheets-connection
